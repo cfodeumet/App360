@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Fan, Settings } from 'lucide-react-native';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default function TabLayout() {
   return (
@@ -27,9 +27,6 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarLabel: ({ color }) => (
-            <Text style={{ color, fontSize: 12, fontWeight: '600' }}>Home</Text>
-          ),
           tabBarIcon: ({ size, color }) => (
             <Fan size={size} color={color} strokeWidth={2} />
           ),
@@ -39,9 +36,6 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Ajustes',
-          tabBarLabel: ({ color }) => (
-            <Text style={{ color, fontSize: 12, fontWeight: '600' }}>Ajustes</Text>
-          ),
           tabBarIcon: ({ size, color }) => (
             <Settings size={size} color={color} strokeWidth={2} />
           ),
