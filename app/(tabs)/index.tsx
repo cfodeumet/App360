@@ -9,6 +9,7 @@ import {
   TextInput,
   ImageBackground,
   Dimensions,
+  Modal,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -28,7 +29,10 @@ import {
   Heart,
   Camera,
   LucideProps,
+  X,
+  ArrowLeft,
 } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
@@ -178,6 +182,13 @@ const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
 export default function HomeScreen() {
   const [searchText, setSearchText] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
+  const router = useRouter();
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [newEventTitle, setNewEventTitle] = useState('');
+  const [newEventDate, setNewEventDate] = useState('');
+  const [newEventCategory, setNewEventCategory] = useState('');
+  const [newEventDescription, setNewEventDescription] = useState('');
+  const [newEventLocation, setNewEventLocation] = useState('');
 
   // Animações de entrada da tela
   const headerOpacity = useSharedValue(0);
@@ -223,10 +234,28 @@ export default function HomeScreen() {
   };
 
   const actionCardsData = [
-    { id: '1', title: 'Criar novo evento', icon: Plus, onPress: () => console.log('Create') },
+    { id: '1', title: 'Criar novo evento', icon: Plus, onPress: () => setShowCreateEventModal(true) },
     { id: '2', title: 'Galeria de eventos', icon: Calendar, onPress: () => console.log('Gallery') },
     { id: '3', title: 'Efeitos de vídeo', icon: Star, onPress: () => console.log('Effects') },
   ];
+
+  const handleCreateEvent = () => {
+    // Aqui você integraria com sua API ou lógica de armazenamento
+    console.log('Novo Evento:', {
+      title: newEventTitle,
+      date: newEventDate,
+      category: newEventCategory,
+      description: newEventDescription,
+      location: newEventLocation,
+    });
+    // Limpa os campos e fecha o modal
+    setNewEventTitle('');
+    setNewEventDate('');
+    setNewEventCategory('');
+    setNewEventDescription('');
+    setNewEventLocation('');
+    setShowCreateEventModal(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -291,6 +320,34 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      {/* Modal de Criação de Evento */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showCreateEventModal}
+        onRequestClose={() => {
+          setShowCreateEventModal(!showCreateEventModal);
+        }}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalView}>
+            <SafeAreaView style={styles.modalSafeArea}>
+              <View style={styles.modalHeader}>
+                <TouchableOpacity onPress={() => setShowCreateEventModal(false)} style={styles.modalCloseButton}>
+                  <ArrowLeft size={24} color="#111827" />
+                </TouchableOpacity>
+                <Text style={styles.modalTitle}>Crie um novo evento</Text>
+                <View style={{width: 24}} /> {/* Espaçador para alinhar o título */}
+              </View>
+              {/* Conteúdo do formulário irá aqui */}
+              <View style={styles.modalContent}>
+                <Text>Testando o modal...</Text>
+              </View>
+            </SafeAreaView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -448,5 +505,44 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     padding: 8,
     borderRadius: 999,
+  },
+  // Estilos do Modal
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo semitransparente
+  },
+  modalView: {
+    width: '100%',
+    height: '90%', // Ocupa 90% da altura da tela
+    backgroundColor: '#F3F4F6',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: 'hidden',
+  },
+  modalSafeArea: {
+    flex: 1,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Para centralizar o título com o botão de fechar
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalCloseButton: {
+    padding: 5,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#111827',
+    textAlign: 'center', // Centraliza o texto
+    flex: 1, // Permite que o título ocupe o espaço disponível
+  },
+  modalContent: {
+    flex: 1,
+    padding: 20,
   },
 });
